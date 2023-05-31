@@ -4,6 +4,29 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// 10
+async function getBooks(){
+    return await axios.get("https://olehkim2-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/")
+   }
+// 11
+function getBookByISBN(isbn){
+    axios.get("https://olehkim2-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/author/" + isbn).
+    then((response)=>{
+        console.log(response.data);
+    });
+}
+// 12
+async function getBookByAuthor(author){
+    return await axios.get("https://olehkim2-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/author/" + author);
+}
+// 13
+function getBookByTitle(title){
+    axios.get("https://olehkim2-5000.theiadocker-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/author/" + title).
+    then((res)=>{
+        console.log(res.data);
+    });
+}
+   
 
 public_users.post("/register", (req,res) => {
   //Write your code here
@@ -21,37 +44,21 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/', async function (req, res) {
+public_users.get('/',function (req, res) {
   //Write your code here
-  let myPromise = new Promise((resolve,reject) => {
-    setTimeout(() => {
-      resolve(books)
-    },3000)})
-    let myBooks = await myPromise;
-  return res.status(300).json(myBooks);
-    
+  return res.status(300).json(books);
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  let myPromise = new Promise((resolve,reject) => {
-    setTimeout(() => {
-      resolve(books[req.params.isbn])
-    },3000)})
-
-  return myPromise.then((myBooks) => {
-    res.status(300).json(myBooks);})
+  return res.status(300).json(books[req.params.isbn]);
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  
-
-  let myPromise = new Promise((resolve,reject) => {
-    setTimeout(() => {
-        let book = {};
+  let book = {};
   for (const [key, value] of Object.entries(books)) {
     if(value.author === req.params.author){
         book[key] = {
@@ -59,35 +66,21 @@ public_users.get('/author/:author',function (req, res) {
         };
     }
   }
-      resolve(book)
-    },3000)})
-
-  return myPromise.then((myBooks) => {
-    res.status(300).json(myBooks);})
+  return res.status(300).json(book);
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  
-
-  let myPromise = new Promise((resolve,reject) => {
-    setTimeout(() => {
-       let book = {};
+  let book = {};
   for (const [key, value] of Object.entries(books)) {
-      let j = key;
     if(value.title === req.params.title){
         book[key] = {
              ...books[key]
         };
     }
-  } 
-      resolve(book)
-    },3000)})
-
-  return myPromise.then((myBooks) => {
-    res.status(300).json(myBooks);})
-  
+  }
+  return res.status(300).json(book);
 });
   
 
